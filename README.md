@@ -18,20 +18,20 @@
 
 ## 📌 Overview
 
-Offline Traefik & Caddy reverse-proxy configuration security auditor
+
+OTraefikX is an offline, read-only Traefik v2/v3 configuration auditor that parses static YAML/TOML and dynamic configuration, Docker-label providers and command-line flags with stdlib-only parsers. It flags the insecure API/dashboard, the Docker-socket provider, missing TLS options, weak entrypoints, exposed metrics and Let's Encrypt storage issues. Findings are mapped to CWE and MITRE ATT&CK, scored and graded, and exported as TXT, Markdown, JSON, CSV or SARIF.
 
 ---
 
 ## ✨ Features
 
-- Stdlib YAML-subset / TOML / JSON / Caddyfile parsers, Traefik CLI-flag + TRAEFIK_* env and Docker-label models
-- Traefik: API/dashboard, entryPoints, TLS options, transports, middlewares, providers, ACME, logging
-- Docker: compose / inspect — docker.sock, privileged, published dashboard, implicit exposure, inline secrets
-- Caddy: Caddyfile + JSON — admin API, auto_https, TLS, basicauth hashes, file_server, headers, on-demand TLS
-- Score + grade A+…F, CWE + MITRE ATT&CK per rule
-- Export TXT / Markdown / JSON / CSV / SARIF 2.1.0
-- Self-test --demo, CI gates --fail-on / --min-severity
-- Offline & read-only: no network, files never modified
+
+- Static and dynamic config parsers (YAML/TOML subset) plus Docker-label and CLI-flag providers
+- API/dashboard checks: api.insecure, unauthenticated dashboard, exposed debug and ping endpoints
+- Provider risk: Docker socket mounted/exposed, exposedByDefault, file provider watch and KV backends
+- TLS checks: minVersion, cipher suites, default cert, sniStrict and missing TLS on routers
+- Entrypoint, middleware (auth/headers/rate-limit), metrics/tracing exposure and ACME storage perms
+- CWE+ATT&CK mapping, score/grade and TXT/MD/JSON/CSV/SARIF export with --fail-on gating
 
 ---
 
@@ -44,8 +44,13 @@ Offline Traefik & Caddy reverse-proxy configuration security auditor
 
 ## 🚀 Usage
 
+
 ```bash
-./OTraefikX
+./OTraefikX --scan -f sarif -o traefik.sarif
+./OTraefikX --static /etc/traefik/traefik.yml --dynamic /etc/traefik/dynamic.yml
+./OTraefikX -r /mnt/image --fail-on high --json
+./OTraefikX --demo
+./OTraefikX --help
 ```
 
 ---
